@@ -49,3 +49,7 @@ function _burn(uint256 depositId) internal {
     totalShares = totalShares - depositInfo[depositId].shares;
     delete depositInfo[depositId]; // Premature deletion causing the bug
 }
+```
+## Recommendations
+- Reorder the Sequence of the function call in the `_handleReturn()` function.
+- Create a temporary variable to store the execution fee before deleting the mapping.
