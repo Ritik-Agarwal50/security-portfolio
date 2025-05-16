@@ -3,7 +3,7 @@
 
 | Protocol        | Platform     | Findings | Status         |
 |-----------------|--------------|----------|----------------|
-| QuantAMM        | CodeHawks    | 1        | ✅ Valid        |
+| [QuantAMM](./QuantAMM/readme.md)        | CodeHawks    | 1        | ✅ Valid        |
 | [Gamma Protocol](./Gamma_Liquidity_Management/README.md)  | CodeHawks    | 1        | ✅ Valid        |
 | Mighty Finance  | Cantina      | 9        | 🟡 Under Review |
 | Alchemix        | Cantina      | 4        | 🟡 Under Review |
