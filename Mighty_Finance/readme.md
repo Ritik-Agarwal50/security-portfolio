@@ -23,29 +23,7 @@ HIGH -> In an active defi market where bots frequently monitor unprotected trans
 ### Recommendation
 To mitigate this issue, add slippage protection on amount0min and amount1min. mitigate
 
-
-## Finding [H-2]: Usage of slot0 to get sqrtPriceLimitX96 is Extermely prone to manuplation
-
-### Summary
-The protocol directly uses the sqrtPriceLimitX96 value from slot0 in two separate instances, which are : 
-- [ShadowPositionValueCalculator.sol: line 34](https://cantina.xyz/code/616d8bb4-16ce-4ca9-9ce9-5b99d6e146ef/contracts/shadow/ShadowPositionValueCalculator.sol?lines=34,34) 
-- [ShadowPositionValueCalculator.sol: line 24](https://cantina.xyz/code/616d8bb4-16ce-4ca9-9ce9-5b99d6e146ef/contracts/shadow/ShadowPositionValueCalculator.sol?lines=24,24) 
-- ShadowPositionValueCalculator::principle() -> ShadowPositionValueCalculator::getCurrentTick() This introduces a price manipulation vector due to the highly mutable nature of slot0, which reflects the last observed tick and price from the pool state.
-
-### Finding Description
-In two instances, which are:- 
-- [ShadowPositionValueCalculator.sol: line 34](https://cantina.xyz/code/616d8bb4-16ce-4ca9-9ce9-5b99d6e146ef/contracts/shadow/ShadowPositionValueCalculator.sol?lines=34,34) 
-- [ShadowPositionValueCalculator.sol: line 24](https://cantina.xyz/code/616d8bb4-16ce-4ca9-9ce9-5b99d6e146ef/contracts/shadow/ShadowPositionValueCalculator.sol?lines=24,24)
-- ShadowPositionValueCalculator::principle() -> ShadowPositionValueCalculator::getCurrentTick() the protocol retrives sqrtpriceLimitX96 from slot0 of the uniswap V3-style pool and uses it directly as sqrtPriceLimitX96. This is unsafe because the sslot0 value can be easily manipulated through flash loans. The sqrtPriceX96 is pulled from Uniswap.slot0, which is the most recent data point and can be manipulated easily via MEV bots and Flashloans with sandwich attacks, which can cause the loss of funds when interacting with Uniswap.swap function. This could lead to wrong calculations and loss of funds for the protocol and other users.
-
-### Impact Explanation
--> High Risk of price Manipulation - the sqrtPriceLimitX96 can be shifted to favor the attacker.
-
-### Recommendation (optional)
--> Use the TWAP function instead of slot0 to get the value of sqrtPriceX96. TWAP is a pricing algorithm used to calculate the average price of an asset over a set period. It is calculated by summing prices at multiple points across a set period and then dividing this total by the total number of price points. Risk
-
-
-## Finding [H-3]: Lack of Validation Leading to Ping-Pong Situation and Imbalanced Position Creation
+## Finding [H-2]: Lack of Validation Leading to Ping-Pong Situation and Imbalanced Position Creation
 ### Summary
 The lack of proper validation in the `ShadowRangeVault::openPosition()` function causes an imbalance when creating a position. Without validating the desired token amounts, mismatched values are passed to the `ShadowRangePositionImpl::openPosition()`. This leads to incorrect swaps being executed in an attempt to match the desired token amounts. As a result, the system creates positions with incorrect token quantities, which also causes errors during token minting and results in erroneous emitted data.
 ### Finding Description
@@ -72,60 +50,8 @@ The likelihood is high due to a lack of validation for mismatched desired amount
 Add checks to ensure that the amount0Desired and amount1Desired match the principal amounts or the sum of principal and borrowed amounts. If there is any mismatch, revert the transaction to prevent creating imbalanced positions.
 Modify the minting process to include proper slippage constraints. Currently, `amount0Min` and `amount1Min` are set to 0, allowing any amount to be minted. Set these values to a reasonable minimum threshold to prevent slippage and mitigate potential attacks.
 
-## Finding [H-4]: Incorrect Handling of Excess Amounts and Debt Repayment in closePosition Can Cause Reverts and Fund Lockups
-Summary
-The `ShadowRangePositionImpl::closePosition` function, which is responsible for settling debts and closing liquidity positions, may be exposed to several critical issues, including underflow risks, negative excess token values, and insufficient liquidity for debt repayment. These issues could lead to unexpected behavior, including transaction failures or potential loss of funds. 
 
-### Finding Description
-- [ShadowRangePositionImpl.sol lines:166,186](https://cantina.xyz/code/616d8bb4-16ce-4ca9-9ce9-5b99d6e146ef/contracts/shadow/ShadowRangePositionImpl.sol?lines=166,186)
-
-- Negative Excess - In scenarios where the available liquidity (e.g., token0Reduced or token1Reduced) is less than the required debt (e.g., currentDebt0 or currentDebt1), the function calculates excess amounts (amount0Excess or amount1Excess). If these excess amounts become negative, the tx will be reverted.
-
-- Zero Excess - Another issue arises when there is zero excess available, but the code still attempts a swap. In such cases, the swapTokenExactInput function would either fail or unnecessarily consume gas for no beneficial outcome.
-
-- Insufficient Liquidity for Debt Repayment - If the total available liquidity (token0Reduced and token1Reduced) is insufficient to repay the debt (i.e., currentDebt0 and currentDebt1), the contract might attempt to swap from token1 to token0 (or vice versa), which can lead to a revert if the swap cannot fulfill the debt requirements.
-
-### Impact Explanation
-This can happen mainly in leverage cases, and all the listed cases above will lead tothe failure of the close position and the usage of gas for no real outcome, and will make user funds stuck in the contract
-
-### Likelihood Explanation
-These issues are likely to occur, especially under volatile market conditions, high-leverage scenarios, or when there is low liquidity in a position. The contract doesn't currently have safeguards in place to handle negative excess or insufficient liquidity situations gracefully, making these failures quite likely.
-
-### Recommendation
-Add a conditional check to ensure amountExcess > 0 and amountExcess >= requiredDebtSwap( currentDebt0 - token0Reduced) to prevent uncertain revert.
-
-
-
-
-
-## Finding [M-1]: Non-Standard ERC20 `transfer()` Usage Causes Reverts
-
-### Summary
-Several functions use the `transfer()` function assuming strict ERC20 standard compliance. However, tokens like USDT and WBTC deviate from the standard by not returning a boolean value, which causes calls to revert unexpectedly.
-
-### Vulnerability Details
-Affected functions are located at:
-
-- [PaymentsUpgradeable.sol: line 50](https://cantina.xyz/code/616d8bb4-16ce-4ca9-9ce9-5b99d6e146ef/contracts/PaymentsUpgradeable.sol?lines=50,50)
-- [Payments.sol: line 50](https://cantina.xyz/code/616d8bb4-16ce-4ca9-9ce9-5b99d6e146ef/contracts/lendingpool/Payments.sol?lines=50,50)
-- [StakingRewards.sol: lines 165, 190, 201](https://cantina.xyz/code/616d8bb4-16ce-4ca9-9ce9-5b99d6e146ef/contracts/lendingpool/StakingRewards.sol?lines=165,165)
-- [StakingRewards.sol: line 190](https://cantina.xyz/code/616d8bb4-16ce-4ca9-9ce9-5b99d6e146ef/contracts/lendingpool/StakingRewards.sol?lines=190,190)
-- [StakingRewards.sol: line 201](https://cantina.xyz/code/616d8bb4-16ce-4ca9-9ce9-5b99d6e146ef/contracts/lendingpool/StakingRewards.sol?lines=201,201)
-
-These instances use `transfer()` to send tokens. However, tokens like USDT do **not** return a boolean value; they revert on failure and return nothing on success. Solidity expects return data, so if none is returned, the call reverts even if the transfer succeeded.
-
-### Impact
-- User funds can get locked if `withdraw()` fails due to a non-standard token behavior.
-- Transfers that actually succeed might still cause contract logic to revert because of missing return data.
-
-### Likelihood
-High likelihood with USDT and similar tokens that do not return boolean values on `transfer()`.
-
-### Recommendation
-Replace all `transfer()` calls with OpenZeppelin’s `safeTransfer()` method, which safely handles tokens that do not return values.
-
-
-## Finding [M-2]:Unwrapping excessinve WETH in unwrapWETH9() function
+## Finding [I-1]:Unwrapping excessinve WETH in unwrapWETH9() function
 ### Summary
 The unwrapWETH9 function unwraps the entire WETH balance of the contract and sends it to the user.
 
@@ -165,116 +91,7 @@ function unwrapWETH9(uint256 amountMinimum, address recipient) internal {
 ```
 This will ensure that only the required ETH amount is unwrapped and sent.
 
-## Finding [M-3]: Missing deadline check allow pending transacation to be maliciously executed
-### Summary
-`ShadowRangePositionImpl::openPosition`does not allow users to submit a deadline for their actions, which execute swaps on Uniswap. This missing feature enables pending transactions to be maliciously executed at a later point.
-
-### Finding Description
-- [`ShadowRangePositionImpl.sol:125`](https://cantina.xyz/code/616d8bb4-16ce-4ca9-9ce9-5b99d6e146ef/contracts/shadow/ShadowRangePositionImpl.sol?lines=125,125)
-
-In the `ShadowRangePositionImpl::openPosition` function, the deadline parameter passed to the `mint()` function is set to the current `block.timestamp`. This offer no leeway for the transaction to be mined in subsequent blocks, making it fragile under fluctuating network conditions, both `amount0min` and `amount1min` are set to `0`, allowing any output amount from swaps or minting to be accepted. This combination potentially creates a scenario where a sandwich attack ot front-running could be exploited by an MEV bot, mainly in volatile market conditions.
-```solidity
-function openPosition(
-        OpenPositionParams memory params
-    )
-        external
-        onlyVault
-        returns (
-            uint256 tokenId,
-            uint128 liquidity,
-            uint256 amount0,
-            uint256 amount1
-        )
-    {
-        // calculate the token0 balance
-        uint256 token0Balance = IERC20(token0).balanceOf(address(this));
-        // checks if the amount0desired is greater than token0balance the perfrom swap
-        if (params.amount0Desired > token0Balance) {
-            _swapTokenExactInput(
-                //swapping it from token1
-                token1,
-                token0,
-                // amount of swap token1 bal - desired1 bal
-                IERC20(token1).balanceOf(address(this)) - params.amount1Desired,
-                // amount out minimum
-                params.amount0Desired - token0Balance
-            );
-        }
-        //calculate the token1 balance
-        uint256 token1Balance = IERC20(token1).balanceOf(address(this));
-        // checks if the amount1desired is greater than token1balance the perfrom swap
-        if (params.amount1Desired > token1Balance) {
-            _swapTokenExactInput(
-                //swapping it from token0
-                token0,
-                token1,
-                // amount of swap token0bal - desired0 bal
-                IERC20(token0).balanceOf(address(this)) - params.amount0Desired,
-                //amount out minimum
-                params.amount1Desired - token1Balance
-            );
-        }
-        //position manager address
-        address shadowNonfungiblePositionManager = getShadowNonfungiblePositionManager();
-
-        //before interacting with position manager we are approving the token0 and token1
-        IERC20(token0).approve(
-            shadowNonfungiblePositionManager,
-            params.amount0Desired
-        );
-        IERC20(token1).approve(
-            shadowNonfungiblePositionManager,
-            params.amount1Desired
-        );
-
-        //
-        (
-            tokenId,
-            liquidity,
-            amount0,
-            amount1
-        ) = IShadowNonfungiblePositionManager(shadowNonfungiblePositionManager)
-            .mint(
-                IShadowNonfungiblePositionManager.MintParams({
-                    token0: token0,
-                    token1: token1,
-                    tickSpacing: tickSpacing,
-                    tickLower: params.tickLower,
-                    tickUpper: params.tickUpper,
-                    amount0Desired: params.amount0Desired,
-                    amount1Desired: params.amount1Desired,
-                    amount0Min: 0,
-                    amount1Min: 0,
-                    recipient: address(this),
-                    deadline: block.timestamp   <--------@audit used block.timestamp
-                })
-            );
-        // state update
-        shadowPositionId = tokenId;
-        positionOwner = params.positionOwner;
-      
-        unwrapWETH9(0, positionOwner);
-
-        //checking balance off        token0Balance = IERC20(token0).balanceOf(address(this));
-        token1Balance = IERC20(token1).balanceOf(address(this));
-
-        if (token0Balance > 0) {
-            pay(token0, address(this), positionOwner, token0Balance);
-        }
-        if (token1Balance > 0) {
-            pay(token1, address(this), positionOwner, token1Balance);
-        }
-    }
-```
-
-### Impact Explanation
-Swap can be maliciously executed later, user can face a loss when the value of the token changes. In the worst scenario, the vault can be liquidated because of the swap.
-
-### Recommendation
-The user should be able to set the deadline.
-
-
-## Finding [M-4]: fee-on-transfer token create incorrect accounting in stake function also revert tx of last user
+## Finding [I-2]: fee-on-transfer token create incorrect accounting in stake function also revert tx of last user
 ### Summary
 The StakingRewards::stake() function assumes that the full amount is passed and transferred, but a fee-on-transfer token results in less being received than expected, leading to reward miss calculation and potential fund loss.
 ### Finding Description
@@ -307,7 +124,7 @@ Check the balance before and after the deposit(stake) and use the difference bet
 
 
 
-## Finding [I-1]: ShadwoRangeVault::openPosition() Allows Creation of Dead Positions with Zero Liquidity
+## Finding [I-3]: ShadwoRangeVault::openPosition() Allows Creation of Dead Positions with Zero Liquidity
 ### Summary
 Liquidity positions can be created with zero liquidity, but no mechanism is available to increase liquidity for them post-creation. This results in either a trapped or unusable position.
 
