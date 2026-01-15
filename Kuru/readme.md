@@ -1,4 +1,4 @@
-### [M-1] Denial of Service via Dust Liquidity Provisioning
+### [L-1] Denial of Service via Dust Liquidity Provisioning
 ### Summary
 An attacker can permanently freeze the market with a single, inexpensive transaction. By being the first to deposit a tiny, "dust-like" amount of funds, the attacker puts the vault into a fragile state due to a mathematical rounding flaw. As a result, any subsequent, normal-sized trade gets trapped in an infinite loop, runs out of gas, and fails. This attack renders the market permanently unusable for all legitimate users.
 
