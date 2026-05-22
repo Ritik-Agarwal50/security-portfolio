@@ -10,3 +10,4 @@
 | [Jigsaw](./Jigsaw-contracts/readme.md)| Cantina      | 2      |   ✅ Valid  | Rank: 60th     |
 | [Ammplify](./Ammplify/README.md) | Sherlock | 1 | ✅ Valid| Rank: 19th  |
 | [Kuru](./Kuru/readme.md)| Cantina | 4 | ✅ Valid | Rank: 3rd 🥉      |
+| [Limit Break AMM](./Limit_Break_AMM/README.md) | Guardian | 2 | ✅ Valid | - |
