@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 # Audit Portfolio
-=======
-# 🔐 Audit Portfolio
->>>>>>> e929b99 (update)
 
 - [About Me](#about-me)
 - [Competitive Audits](#competitive-audits)
