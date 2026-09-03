@@ -23,8 +23,8 @@ For private audit or consulting requests, please reach out via:
 | `Jigsaw ~ Cantina` | Lending protocol with collateralized positions, debt, and liquidations. | 92th | [2 findings →](./Jigsaw-contracts/readme.md) |
 | `Mighty Finance ~ Cantina` | Leveraged yield farming and lending protocol on Sonic. | 117th | [5 findings →](./Mighty_Finance/readme.md) |
 | `Alchemix V3 ~ Cantina` | Loans backed by future yield — collateral earns interest that repays debt. | 86th | [2 findings →](./Alchemix/readme.md) |
-| `Gamma Protocol ~ CodeHawks` | Active liquidity management protocol — GMX perpetual vault. | — | [1 finding →](./Gamma_Liquidity_Management/README.md) |
-| `QuantAMM ~ CodeHawks` | AMM with weight-based liquidity management and configurable fees. | — | [1 finding →](./QuantAMM/readme.md) |
+| `Gamma Protocol ~ CodeHawks` | Active liquidity management protocol — GMX perpetual vault. | 64th | [1 finding →](./Gamma_Liquidity_Management/README.md) |
+| `QuantAMM ~ CodeHawks` | AMM with weight-based liquidity management and configurable fees. | 90th | [1 finding →](./QuantAMM/readme.md) |
 | `Limit Break AMM ~ Guardian` | AMM with customizable token swap hooks. | — | [2 findings →](./Limit_Break_AMM/README.md) |
 
 # Private Audits
