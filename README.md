@@ -20,8 +20,8 @@ For private audit or consulting requests, please reach out via:
 |---|---|---|---|
 | `Kuru ~ Cantina` | On-chain central limit order book exchange with vaults and margin trading. | 🥉 3rd | [4 findings →](./Kuru/readme.md) |
 | `Ammplify ~ Sherlock` | Uniswap v4-based liquidity amplification protocol with maker/keeper hooks. | 19th | [1 finding →](./Ammplify/README.md) |
-| `Jigsaw ~ Cantina` | Lending protocol with collateralized positions, debt, and liquidations. | 60th | [2 findings →](./Jigsaw-contracts/readme.md) |
-| `Mighty Finance ~ Cantina` | Leveraged yield farming and lending protocol on Sonic. | 79th | [5 findings →](./Mighty_Finance/readme.md) |
+| `Jigsaw ~ Cantina` | Lending protocol with collateralized positions, debt, and liquidations. | 92th | [2 findings →](./Jigsaw-contracts/readme.md) |
+| `Mighty Finance ~ Cantina` | Leveraged yield farming and lending protocol on Sonic. | 117th | [5 findings →](./Mighty_Finance/readme.md) |
 | `Alchemix V3 ~ Cantina` | Loans backed by future yield — collateral earns interest that repays debt. | 86th | [2 findings →](./Alchemix/readme.md) |
 | `Gamma Protocol ~ CodeHawks` | Active liquidity management protocol — GMX perpetual vault. | — | [1 finding →](./Gamma_Liquidity_Management/README.md) |
 | `QuantAMM ~ CodeHawks` | AMM with weight-based liquidity management and configurable fees. | — | [1 finding →](./QuantAMM/readme.md) |
