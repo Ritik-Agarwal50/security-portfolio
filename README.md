@@ -18,14 +18,17 @@ For private audit or consulting requests, please reach out via:
 
 | Contest | Description | Result | Report |
 |---|---|---|---|
-| `Kuru ~ Cantina` | On-chain central limit order book exchange with vaults and margin trading. | 🥉 3rd | [4 findings →](./Kuru/readme.md) |
-| `Ammplify ~ Sherlock` | Uniswap v4-based liquidity amplification protocol with maker/keeper hooks. | 19th | [1 finding →](./Ammplify/README.md) |
-| `Jigsaw ~ Cantina` | Lending protocol with collateralized positions, debt, and liquidations. | 92th | [2 findings →](./Jigsaw-contracts/readme.md) |
-| `Mighty Finance ~ Cantina` | Leveraged yield farming and lending protocol on Sonic. | 117th | [5 findings →](./Mighty_Finance/readme.md) |
-| `Alchemix V3 ~ Cantina` | Loans backed by future yield — collateral earns interest that repays debt. | 86th | [2 findings →](./Alchemix/readme.md) |
-| `Gamma Protocol ~ CodeHawks` | Active liquidity management protocol — GMX perpetual vault. | 64th | [1 finding →](./Gamma_Liquidity_Management/README.md) |
-| `QuantAMM ~ CodeHawks` | AMM with weight-based liquidity management and configurable fees. | 90th | [1 finding →](./QuantAMM/readme.md) |
-| `Limit Break AMM ~ Guardian` | AMM with customizable token swap hooks. | — | [2 findings →](./Limit_Break_AMM/README.md) |
+| `Kuru ~ Cantina` | On-chain central limit order book exchange with vaults and margin trading. | 🥉 3rd / 723 | [Link →](./Kuru/readme.md) |
+| `Ammplify ~ Sherlock` | Uniswap v4-based liquidity amplification protocol with maker/keeper hooks. | 19th /300+  | [Link →](./Ammplify/README.md) |
+| `Jigsaw ~ Cantina` | Lending protocol with collateralized positions, debt, and liquidations. | 92th /759 | [Link →](./Jigsaw-contracts/readme.md) |
+| `Mighty Finance ~ Cantina` | Leveraged yield farming and lending protocol on Sonic. | 117th /629 | [Link →](./Mighty_Finance/readme.md) |
+| `Alchemix V3 ~ Cantina` | Loans backed by future yield — collateral earns interest that repays debt. | 86th /902 | [Link →](./Alchemix/readme.md) |
+| `Gamma Protocol ~ CodeHawks` | Active liquidity management protocol — GMX perpetual vault. | 64th /110 | [Link →](./Gamma_Liquidity_Management/README.md) |
+| `QuantAMM ~ CodeHawks` | AMM with weight-based liquidity management and configurable fees. | 90th /110 | [Link →](./QuantAMM/readme.md) |
+| `Limit Break AMM ~ Guardian` | AMM with customizable token swap hooks. | — | [Link →](./Limit_Break_AMM/README.md) |
+| `OpenCover Insured Vaults` | OpenCover provides on-chain insurance infrastructure, with Insured Vaults enabling covered yield for DeFi vaults through composable, variable-length insurance policies.| 57th / 182 |[Link →](https://audits.sherlock.xyz/contests/1222?filter=results) |
+|`Hotstuff` | Hotstuff is a purpose-built L1 for Confidential Integrated DeFi | 41st /109 | [Link →](https://audits.sherlock.xyz/contests/1233) |
+|` Flying Tulip` |  Flying Tulip is an on‑chain financial system that standardizes pricing, credit, and risk across a suite of products, spot trading, lending, perpetual futures, insurance, and a settlement rail. | 87th /264 |[Link →](https://audits.sherlock.xyz/contests/1223?filter=results) |
 
 # Private Audits
 
